@@ -1,6 +1,6 @@
 "use client";
-import { apiClient } from "@/api/apiClient";
-import endPoints from "@/api/apiEndpoint";
+import { apiClient } from "@/app/api/apiClient";
+import endPoints from "@/app/api/apiEndpoint";
 import { useState } from "react";
 import {
   FaMosque,
