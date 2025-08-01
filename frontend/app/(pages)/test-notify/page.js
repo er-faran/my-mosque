@@ -7,7 +7,7 @@ export default function TestNotify() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: "Salah Reminder",
-        body: "Time for Maghrib Salah in 5 minutes.",
+        body: "Time for prayer in 5 minutes!",
       }),
     });
   };
