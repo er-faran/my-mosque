@@ -11,8 +11,8 @@ export default function RegisterMosquePage() {
           <FaMosque /> Register Your Mosque
         </h1>
         <p className="text-lg text-gray-600">
-          "The mosques of Allah are only to be maintained by those who believe
-          in Allah and the Last Day..."
+          &quot;The mosques of Allah are only to be maintained by those who
+          believe in Allah and the Last Day...&quot;
           <br />
           <span className="italic text-sm">— Surah At-Tawbah 9:18</span>
         </p>
@@ -30,8 +30,8 @@ export default function RegisterMosquePage() {
       {/* Disclaimer and Hadith */}
       <div className="max-w-3xl mx-auto text-sm text-gray-600 space-y-4 text-center">
         <p>
-          "Whoever builds a mosque for Allah, Allah will build for him a house
-          like it in Paradise."
+          &quot;Whoever builds a mosque for Allah, Allah will build for him a
+          house like it in Paradise.&quot;
           <br />
           <span className="italic">
             — Sahih al-Bukhari 450, Sahih Muslim 533
