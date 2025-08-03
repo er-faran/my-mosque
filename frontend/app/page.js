@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaMosque } from "react-icons/fa";
 import heroSectionImage from "./(images)/mosque-hero-section.jpg";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import PushSetup from "./components/PushSetup";
 
 export default function LandingPage() {
   const features = [
@@ -60,8 +61,118 @@ export default function LandingPage() {
     setIndex((prev) => (prev === features.length - 1 ? 0 : prev + 1));
   };
 
+  // useEffect(() => {
+  //   if ("serviceWorker" in navigator) {
+  //     navigator.serviceWorker
+  //       .register("/sw.js")
+  //       .then(() => console.log("✅ Service Worker registered"))
+  //       .catch((err) => console.error("SW registration failed", err));
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if ("serviceWorker" in navigator && "PushManager" in window) {
+  //     navigator.serviceWorker.register("/sw.js").then(async (reg) => {
+  //       // Check for existing subscription
+  //       let subscription = await reg.pushManager.getSubscription();
+  //       if (!subscription) {
+  //         subscription = await reg.pushManager.subscribe({
+  //           userVisibleOnly: true,
+  //           applicationServerKey: urlBase64ToUint8Array(
+  //             process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  //           ),
+  //         });
+  //       }
+  //       // Send subscription to backend
+  //       await fetch("/api/subscribe", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(subscription),
+  //       });
+  //     });
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    async function scheduleAzanNotifications() {
+      const res = await fetch("/azanTimes.json");
+      const azanTimes = await res.json();
+
+      Notification.requestPermission().then(() => {
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          reg.showNotification("Manual Test", {
+            body: "This is a manual test notification.",
+          });
+        });
+      });
+
+      if (Notification.permission === "granted") {
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          if (reg) {
+            console.log("test in");
+
+            reg.showNotification("Azan Reminder", {
+              body: `It's time for test prayer!`,
+            });
+          }
+        });
+      }
+
+      Object.entries(azanTimes).forEach(([prayer, time]) => {
+        const [hour, minute] = time.split(":").map(Number);
+        const now = new Date();
+        const azanTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          hour,
+          minute,
+          0,
+          0
+        );
+
+        let delay = azanTime - now;
+        if (delay < 0) {
+          // If time has passed, schedule for tomorrow
+          delay += 24 * 60 * 60 * 1000;
+        }
+
+        console.log("delay", delay);
+
+        setTimeout(() => {
+          if (Notification.permission === "granted") {
+            navigator.serviceWorker.getRegistration().then((reg) => {
+              if (reg) {
+                reg.showNotification("Azan Reminder", {
+                  body: `It's time for ${prayer} prayer!`,
+                });
+              }
+            });
+          }
+        }, delay);
+      });
+    }
+
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      console.log("inside");
+
+      scheduleAzanNotifications();
+    }
+  }, []);
+
+  // function urlBase64ToUint8Array(base64String) {
+  //   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  //   const base64 = (base64String + padding)
+  //     .replace(/-/g, "+")
+  //     .replace(/_/g, "/");
+
+  //   const raw = atob(base64);
+  //   return new Uint8Array([...raw].map((c) => c.charCodeAt(0)));
+  // }
+
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col">
+      <PushSetup />
       {/* Hero Section */}
       <section className="flex-1 flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-16 bg-gradient-to-br from-blue-100 to-white">
         <div className="w-full md:w-1/2 space-y-6">

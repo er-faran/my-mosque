@@ -1,9 +1,18 @@
-self.addEventListener("push", function (e) {
-  const data = e.data?.json() || {};
-  const title = data.title || "Salah Reminder";
+self.addEventListener("push", function (event) {
+  console.log("[Service Worker] Push Received:", event);
+
+  let data = {};
+  try {
+    data = event.data.json(); // Use the payload sent from backend
+  } catch (e) {
+    data = { title: "Azan Reminder", body: "It's time for prayer!" };
+  }
+
+  const title = data.title || "Azan Reminder";
   const options = {
-    body: data.body || "Time for Salah. Prepare yourself.",
-    icon: "/icons/icon-192x192.png",
+    body: data.body || "It's time for prayer!",
   };
-  e.waitUntil(self.registration.showNotification(title, options));
+  console.log("debug_options", options);
+
+  event.waitUntil(self.registration.showNotification(title, options));
 });
